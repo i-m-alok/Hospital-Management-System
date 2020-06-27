@@ -1,69 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
-</head>
+	<title>{% block title %}{% endblock %}</title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> </head>
+    {% block head %}{% endblock%}
 <body>
-<div class="header">
-    <h4>ABC Hospital Management System</h4>
-    <div class="pure-menu pure-menu-horizontal">
-    <ul class="pure-menu-list">
-        
-        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-            <a href="#" id="menuLink1" class="pure-menu-link">Patient</a>
-            <ul class="pure-menu-children">
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Patient Regitration</a>
+	<div class="header">
+		<h4>ABC Hospital Management System</h4>
+		<div class="pure-menu pure-menu-horizontal">
+			<ul class="pure-menu-list">
+				<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink1" class="pure-menu-link">Patient</a>
+					<ul class="pure-menu-children">
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Patient Regitration</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Update Patient</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Delete Patient</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">View Patient</a> </li>
+					</ul>
+				</li>
+				<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink2" class="pure-menu-link">Pharmacy</a>
+					<ul class="pure-menu-children">
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Patient Regitration</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Update Patient</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Delete Patient</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">View Patient</a> </li>
+					</ul>
+				</li>
+				<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink2" class="pure-menu-link text-warning">Dignostics</a>
+					<ul class="pure-menu-children">
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Patient Regitration</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Update Patient</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Delete Patient</a> </li>
+						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">View Patient</a> </li>
+					</ul>
+				</li>
+				<li> 
+                    {% if login %}
+					    <button type="submit" class="pure-button"><a href='{{url_for("logout") }}'>Logout</a></button> 
+                    {% endif %} 
                 </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Update Patient</a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Delete Patient</a>
-                </li>
-                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">View Patient</a>
-                </li>
-            </ul>
-        </li>
-        <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-            <a href="#" id="menuLink2" class="pure-menu-link">Pharmacy</a>
-            <ul class="pure-menu-children">
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Patient Regitration</a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Update Patient</a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Delete Patient</a>
-                </li>
-                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">View Patient</a>
-                </li>
-            </ul>
-        </li>
-         <li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover">
-            <a href="#" id="menuLink2" class="pure-menu-link text-warning">Dignostics</a>
-            <ul class="pure-menu-children">
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Patient Regitration</a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Update Patient</a>
-                </li>
-                <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">Delete Patient</a>
-                </li>
-                 <li class="pure-menu-item">
-                    <a href="#" class="pure-menu-link">View Patient</a>
-                </li>
-            </ul>
-        </li>
-    </ul>
-</div>
-</div>
-
-
-     {% block body %}
-      {% endblock %}
+			</ul>
+		</div>
+	</div> 
+    {% with messages = get_flashed_messages(with_categories=true) %} 
+        {% if messages %} 
+            {% for category, message in messages %}
+	            <div class="alert alert-{{category}}"> 
+                    <span>{{message}}</span> 
+                </div> 
+            {% endfor %} 
+        {% endif %} 
+    {% endwith %} 
+    {% block body %} {% endblock %}
+</body>
+</html>

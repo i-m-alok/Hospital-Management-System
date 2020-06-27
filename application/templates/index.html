@@ -3,8 +3,10 @@
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
 	<title>
-		my project
+		Log In
 	</title>
 	
 <style>
@@ -31,32 +33,30 @@
 	<div class="header">
     <h4>ABC Hospital Management System</h4>
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class = "alert alert-{{category}}">
+                  <span>{{message}}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <form class="pure-form pure-form-aligned" action="" method="POST" >
     <fieldset>
         <div class="pure-control-group">
-            <label for="name">Username</label>
-            <input type="text" name="username" placeholder="Username" />
-            
-            
+            <label for="name">UserID</label>
+            <input type="text" name="userid" placeholder="Userid" />
         </div>
         <div class="pure-control-group">
             <label for="password">Password</label>
             <input type="password" name="password"  placeholder="Password" />
-            
         </div>
-        
-        
         <div class="pure-controls">
-              
             <button type="submit" class="pure-button pure-button-primary">Submit</button>
-          
         </div>
       
     </fieldset>
 </form>
-{% if error %}
-        <p style="text-align: center;" class="error"><strong>Error:</strong> {{ error }}
-{% endif %}
-
 </body>
 </html>

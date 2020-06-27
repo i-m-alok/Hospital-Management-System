@@ -1,40 +1,34 @@
 {% extends "base.html" %}
-{% block body %}
-<!DOCTYPE html>
-<html>
-<head>
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+{% block title %} Create Patient{% endblock%}
+{% block head%}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
     <script src="{{url_for('static', filename='state.js')}}"></script>
-	<title>
-		my project
-	</title>
-	
-<style>
-	.header {
-  padding: 4px;
-  text-align: center;
-  background: #1abc9c;
-  color: white;
-  font-size: 20px;
-  position: absoulute;
-}
+    <style>
+        .header {
+    padding: 4px;
+    text-align: center;
+    background: #1abc9c;
+    color: white;
+    font-size: 20px;
+    position: absoulute;
+    }
 
-.pure-menu-link{
-	background: rgb(66, 184, 221);
-    
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-}
-.pure-menu-list{
-	padding-bottom: 10px;
-}
+    .pure-menu-link{
+        background: rgb(66, 184, 221);
+        
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+    .pure-menu-list{
+        padding-bottom: 10px;
+    }
 
-</style>
-</head>
+    </style>
+{% endblock %}
 
-
-		<body>
-			<form style="padding-left: 380px" class="pure-form pure-form-aligned">
+{% block body %}
+<body>
+	<form style="padding-left: 380px" class="pure-form pure-form-aligned">
     <fieldset>
         <div class="pure-control-group">
             <label for="aligned-SSN">Patient SSN ID *</label>
@@ -85,7 +79,6 @@
                     <td>
                         <select  id="select2"  name="city">
                             <option value="">Select</option>
-
                         </select>
                     </td>
                 </div>
