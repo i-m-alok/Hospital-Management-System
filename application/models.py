@@ -1,25 +1,29 @@
 import flask
 from application import db
 from datetime import datetime
-from werkzeug.security import generate_password_hash, check_password_hash
 
-class userStore(db.Model):
-    userName = db.Column(db.String(20), primary_key= True, nullable= False)
-    password = db.Column(db.String(60), nullable= False)
-    timeStamp = db.Column(db.DateTime, default=datetime.utcnow, nullable= False)
 
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
-    
-    def get_password(self, password):
-        return check_password_hash(self.password, password)
+
+
+""" Table for login and logout """
+
+class userstore(db.Model):                                                  
+    username = db.Column(db.String(80),primary_key=True)
+    password = db.Column(db.String(60), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow, nullable= False)
+
+
+""" Association table """
 
 billed_for = db.Table(
     "bill",
-    db.Column("patientId", db.Integer, db.ForeignKey('patient.id'), primary_key = True, nullable = False),
-    db.Column("testId", db.Integer, db.ForeignKey('test.id'), nullable = True),
-    db.Column("medicineId", db.Integer, db.ForeignKey('medicine.id'), nullable = True)
+    db.Column("patientId", db.Integer, db.ForeignKey('patient.id'), nullable = False),
+    db.Column("testId", db.Integer, db.ForeignKey('test.id')),
+    db.Column("medicineId", db.Integer, db.ForeignKey('medicine.id'))
 )
+
+
+""" Table for patients  """
 class Patient(db.Model):
     id = db.Column(db.Integer, primary_key = True, unique = True, autoincrement=True)
     patientSSN = db.Column(db.Integer, primary_key = True)
@@ -30,19 +34,25 @@ class Patient(db.Model):
     address = db.Column(db.String, nullable = False)
     state = db.Column(db.String)
     city = db.Column(db.String)
-    status = db.Column(db.String, nullable = False)
+    status = db.Column(db.String, nullable = True)
     bill_of_medicine  = db.relationship("Medicine", secondary = billed_for, backref = 'patient')
     bill_of_test = db.relationship("Test", secondary = billed_for, backref= 'patient')
 
+
+""" Table for medicine"""
 class Medicine(db.Model):
-    id = db.Column(db.Integer, primary_key = True, nullable = False)
+    id = db.Column(db.Integer, primary_key = True)
     medicineName = db.Column(db.String(30), nullable = False)
     quantityAvailable = db.Column(db.Integer, nullable = False)
     quantityIssued = db.Column(db.Integer, default = 0)
     rate = db.Column(db.Float, nullable = False)
 
 
+""" Table for diagnosis"""
 class Test(db.Model):
-    id = db.Column(db.Integer, primary_key = True, nullable = False)
+    id = db.Column(db.Integer, primary_key = True)
     testName = db.Column(db.String(30), nullable = False)
     rate = db.Column(db.Float, nullable = False)
+
+
+

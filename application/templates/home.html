@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block heading %}
+<center>Home</center>
+
+{% endblock %}
+
+{% block content %}
+
+{% if message %}
+    <h4 style="color: blue;"> {{ message }} </h4>
+    <br>
+    <br>
+    <br>
+    <br>
+{% endif %}
+
+
+<div>
+	<ul style="list-style:none; margin: 0; padding: 0; border:1px dotted orange; display:flex; flex-direction:coloumn;  flex-wrap:wrap; justify-content:space-around; align-items:center;  height:200px;">
+		{% if user_type=='admin' %}
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="{{url_for('pr')}}" style="text-decoration: none;">PATIENT REGISTRATION</a></li>
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="" style="text-decoration: none;">DELETE PATIENT</a></li>
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="" style="text-decoration: none;">UPDATE PATIENT</a></li>
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="{{url_for('vp')}}" style="text-decoration: none;">VIEW PATIENTS</a></li>
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="" style="text-decoration: none;">SEARCH PATIENT</a></li>
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="" style="text-decoration: none;">BILLING</a></li>
+
+		{% elif user_type=='pharmacist' %}
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="" style="text-decoration: none;">PATIENT DETAILS</a></li>
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted brown;   flex:1 1 5em;"><a href="" style="text-decoration: none;">ISSUE MEDICINES</a></li>
+
+		{% elif user_type=='diagnostic' %}
+		<li style="border:1px solid black; margin:0.5em;  padding:0.5 em;  border:3px dotted white;   flex:1 1 5em;"><a href="" style="text-decoration: none;">DIAGNOSTICS</a></li> 
+
+
+		
+		{% endif %}
+	</ul>
+</div>
+
+
+
+
+
+{% endblock %}

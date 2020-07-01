@@ -1,67 +1,57 @@
 {% extends "base.html" %}
-{% block title %} Create Patient{% endblock%}
-{% block head%}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
-    <script src="{{url_for('static', filename='state.js')}}"></script>
-    <style>
-        .header {
-    padding: 4px;
-    text-align: center;
-    background: #1abc9c;
-    color: white;
-    font-size: 20px;
-    position: absoulute;
-    }
 
-    .pure-menu-link{
-        background: rgb(66, 184, 221);
-        
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    }
-    .pure-menu-list{
-        padding-bottom: 10px;
-    }
-
-    </style>
+{% block title %}
+Patient Registration
 {% endblock %}
 
-{% block body %}
-<body>
-	<form style="padding-left: 380px" class="pure-form pure-form-aligned" method="post" action="{{ url_for('add_patient') }}">
+{% block heading %}
+<center>
+    Patient Registration
+</center>
+
+{% endblock %}
+
+{% block content %}
+<ul style="list-style-type: none; float: right; font-size: large; width: 8.0em; ">
+  <li style="display:inline"><a href="{{url_for('logout')}}" style="text-decoration: none">LOGOUT</a></li>
+</ul>
+
+    <!--  <h1 style="text-align: center;">Patient Registration</h1>-->
+			<form method="post" style="padding-left: 380px" class="pure-form pure-form-aligned" action="{{url_for('patient_registration')}}">
+
     <fieldset>
         <div class="pure-control-group">
             <label for="aligned-SSN">Patient SSN ID *</label>
-            <input type="text" id="SSN" placeholder="" name="ssnId"/>
+            <input type="text" id="SSN" name="ssn" placeholder="" />
         </div>
         <div class="pure-control-group">
             <label for="aligned-name">Patient Name*</label>
-            <input type="text" id="name" placeholder="" name="name"/>
-        </div>
+            <input type="text" id="name" name="name" placeholder="" />
+        </div>   
         <div class="pure-control-group">
             <label for="aligned-age">Patient Age *</label>
-            <input type="number" id="age" placeholder="" name="age"/>
+            <input type="number" id="age" name="age" placeholder="" />
         </div>
         <div class="pure-control-group">
             <label for="aligned-admission">Date of Admission *</label>
-            <input type="date" id="admission" placeholder="" name="dateOfAdmission" />
+            <input type="date" id="admission" name="doa" placeholder="" />
         </div>
-        <div><label style="padding-left: 80px" for="aligned-states">Type of bed *</label>
-         <select name="typeOfBed">
-         	<option value="">Select type..</option>
-         	<option value="type-1">type-1</option>
-         	<option value="type-2">type-2</option>
-         	<option value="type-3">type-3</option>
+        <div><label style="padding-left: 80px" for="aligned-states" >Type of bed *</label>
+         <select name="typeb">
+         	<option value="">Select</option>
+         	  <option value="single">single</option>
+         	<option value="semi sharing">semi sharing</option>
+         	<option value="general ward">general ward</option>
          </select>
      </div><br>
               <div class="pure-control-group">
             <label for="aligned-address">address *</label>
-            <input type="textarea" name="address"></input>
+            <textarea rows="4" cols="50" name="address"></textarea>
             </div>
 
           <div class="pure-control-group">
 			<label for="State">State</label>
-			<select id="select1"  name="state" onchange="populate(this.id,'select2')">
+			<select  id="select1"  name="state" onchange="populate(this.id,'select2')">
 		 <option value="">Select</option>
                             <option value="chandigarh">Chandigarh</option>
                             <option value="Delhi">Delhi</option>
@@ -79,17 +69,26 @@
                     <td>
                         <select  id="select2"  name="city">
                             <option value="">Select</option>
+                            <option value="Kannur">Kannur</option>
+                            <option value="Kadugodi">Kadugodi</option>
+
                         </select>
                     </td>
                 </div>
              <div class="pure-controls">
             
             <button type="submit" class="pure-button pure-button-primary">Submit</button>
+            <button type="reset" class="pure-button pure-button-primary">reset</button>
         </div>
     </fieldset>
 </form>
-</body>
-</html>
 
-    </div>
+{% if message %}
+   <h4 style="color: red;"><center> {{ message }} </center> </h4>
+    <br>
+    <br>
+    <br>
+    <br>
+{% endif %}
+
 {% endblock %}

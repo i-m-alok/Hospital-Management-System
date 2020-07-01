@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block heading %}
+<center>
+    Login
+</center>
+
+{% endblock %}
+
+{% block content %}
+
+
+
+<form style="text-align: center;" method="POST" style="padding:5px;">
+
+    <!-- Username  Field -->
+    {{ form.username.label }}: 
+    {{ form.username }} 
+    <br>
+    {% if form.username.errors %}
+        {% for error in form.username.errors %}
+        <b style="color:red;"> {{ error }} </b> 
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    <br>
+
+    <!-- Password Field -->
+    {{ form.password.label }}: 
+    {{ form.password }}
+    <br>
+    {% if form.password.errors %}
+        {% for error in form.password.errors %}
+        <b style="color:red;"> {{ error }} </b> 
+        <br>
+        {% endfor %}
+    {% endif %}
+    <br>
+
+
+    {{ form.csrf_token }}
+    {{ form.submit() }}
+</form>
+
+
+{% if message %}
+   <h4 style="color: red;"><center> {{ message }} </center> </h4>
+    <br>
+    <br>
+    <br>
+    <br>
+{% endif %}
+
+{% endblock %}
