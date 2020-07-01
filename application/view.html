@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <title>
+    my project
+  </title>
+  
+</head>
+<style>
+  .search-container button:hover {
+  background: #ccc;
+}
+body{
+  background-color: skyblue;
+}
+.search-container {
+    float: none;
+  }
+  .pure-control-group{
+    text-align: left
+  }
+  
+
+</style>
+
+    
+    <body>
+      <h1 style="text-align: center;">View Patient</h1>
+      <form style="padding-left: 380px" class="pure-form pure-form-aligned">
+
+    <fieldset style="text-align: left">
+        <div class="pure-control-group">
+            <label class="aligned-SSN">Patient ID *</label>
+            <input type="text" placeholder="" name="search">
+      <button type="submit"><i class="fa fa-search"></i></button>
+        </div>
+        <div class="pure-control-group">
+            <label for="aligned-name">Patient Name*</label>
+            <input type="text" id="name" placeholder="" />
+        </div>
+        <div class="pure-control-group">
+            <label for="aligned-age">Patient Age *</label>
+            <input type="number" id="age" placeholder="" />
+        </div>
+        <div class="pure-control-group">
+            <label>Date of Admission *</label>
+            <input type="text" id="admission" placeholder="" />
+        </div>
+        <div class="pure-control-group">
+        <div><label>Type of bed *</label>
+          <input type="text" name="bed">
+     </div><br>
+              <div class="pure-control-group">
+            <label for="aligned-address">address *</label>
+            <textarea rows="4" cols="50" name="comment" form="usrform"></textarea>
+            </div>
+
+          <div class="pure-control-group">
+            <label for="aligned-state">State *</label>
+            <input type="text" name="state">
+            </div>
+
+             <div class="pure-control-group">
+            <label for="aligned-state">City *</label>
+            <input type="text" name="city">
+            </div>
+            <br>
+            <div>
+            <label style="padding-left: 80px">*Mandatory</label>
+          </div>
+
+    </fieldset>
+</form>
+</body>
+</html>
+
+    </div>
+{% endblock %}
