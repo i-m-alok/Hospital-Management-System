@@ -10,14 +10,16 @@
 		<h4>ABC Hospital Management System</h4>
 		<div class="pure-menu pure-menu-horizontal">
 			<ul class="pure-menu-list">
-				<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink1" class="pure-menu-link">Patient</a>
-					<ul class="pure-menu-children">
-						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Patient Regitration</a> </li>
-						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Update Patient</a> </li>
-						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Delete Patient</a> </li>
-						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">View Patient</a> </li>
-					</ul>
-				</li>
+				{% if session.get('userName')[:2]=="RE" %}
+					<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink1" class="pure-menu-link">Patient</a>
+						<ul class="pure-menu-children">
+							<li class="pure-menu-item"> <a href="{{ url_for('home') }}" class="pure-menu-link">Patient Regitration</a> </li>
+							<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Update Patient</a> </li>
+							<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Delete Patient</a> </li>
+							<li class="pure-menu-item"> <a href="{{ url_for('viewPatient') }}" class="pure-menu-link">View Patient</a> </li>
+						</ul>
+					</li>
+				{% elif session.get('userName')[:2]=="PS"%}
 				<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink2" class="pure-menu-link">Pharmacy</a>
 					<ul class="pure-menu-children">
 						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Patient Regitration</a> </li>
@@ -26,6 +28,7 @@
 						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">View Patient</a> </li>
 					</ul>
 				</li>
+				{% elif session.get('userName')[:2]=="DS" %}
 				<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink2" class="pure-menu-link text-warning">Dignostics</a>
 					<ul class="pure-menu-children">
 						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Patient Regitration</a> </li>
@@ -34,8 +37,9 @@
 						<li class="pure-menu-item"> <a href="#" class="pure-menu-link">View Patient</a> </li>
 					</ul>
 				</li>
+				{% endif %}
 				<li> 
-                    {% if login %}
+                    {% if session.get('userName') %}
 					    <button type="submit" class="pure-button"><a href='{{url_for("logout") }}'>Logout</a></button> 
                     {% endif %} 
                 </li>

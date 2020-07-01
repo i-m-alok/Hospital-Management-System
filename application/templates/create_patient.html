@@ -28,26 +28,26 @@
 
 {% block body %}
 <body>
-	<form style="padding-left: 380px" class="pure-form pure-form-aligned">
+	<form style="padding-left: 380px" class="pure-form pure-form-aligned" method="post" action="{{ url_for('add_patient') }}">
     <fieldset>
         <div class="pure-control-group">
             <label for="aligned-SSN">Patient SSN ID *</label>
-            <input type="text" id="SSN" placeholder="" />
+            <input type="text" id="SSN" placeholder="" name="ssnId"/>
         </div>
         <div class="pure-control-group">
             <label for="aligned-name">Patient Name*</label>
-            <input type="text" id="name" placeholder="" />
+            <input type="text" id="name" placeholder="" name="name"/>
         </div>
         <div class="pure-control-group">
             <label for="aligned-age">Patient Age *</label>
-            <input type="number" id="age" placeholder="" />
+            <input type="number" id="age" placeholder="" name="age"/>
         </div>
         <div class="pure-control-group">
             <label for="aligned-admission">Date of Admission *</label>
-            <input type="date" id="admission" placeholder="" />
+            <input type="date" id="admission" placeholder="" name="dateOfAdmission" />
         </div>
         <div><label style="padding-left: 80px" for="aligned-states">Type of bed *</label>
-         <select name=list>
+         <select name="typeOfBed">
          	<option value="">Select type..</option>
          	<option value="type-1">type-1</option>
          	<option value="type-2">type-2</option>
@@ -56,12 +56,12 @@
      </div><br>
               <div class="pure-control-group">
             <label for="aligned-address">address *</label>
-            <textarea rows="4" cols="50" name="comment" form="usrform"></textarea>
+            <input type="textarea" name="address"></input>
             </div>
 
           <div class="pure-control-group">
 			<label for="State">State</label>
-			<select name=list id="select1"  name="state" onchange="populate(this.id,'select2')">
+			<select id="select1"  name="state" onchange="populate(this.id,'select2')">
 		 <option value="">Select</option>
                             <option value="chandigarh">Chandigarh</option>
                             <option value="Delhi">Delhi</option>
