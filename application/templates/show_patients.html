@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Here is All Patients{% endblock%}
+
+{% block head%}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style>
+      .header {
+    padding: 4px;
+    text-align: center;
+    background: #1abc9c;
+    color: white;
+    font-size: 20px;
+    position: absoulute;
+    }
+
+    .pure-menu-link{
+        background: rgb(66, 184, 221);
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+    .pure-menu-list{
+        padding-bottom: 10px;
+    }
+    .search-container button:hover {
+    background: #ccc;
+  }
+  .search-container {
+      float: none;
+    }
+  </style>
+{% endblock %}
+{% block body %}
+
+<br>
+<h1 style="text-align: center;">Here is All Patients</h1>
+<table style="border: 1px solid black; border-collapse: collapse; margin: 0 auto;  ">
+	<tr>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Patient Id</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Name</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Age</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Adress</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">DOJ</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Type Of Room</th>
+    </tr>
+    {% for p in patient %}
+    <tr>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.id }}</td>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.name }}</td>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.age }}</td>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.address}}, {{ p.city}}, {{p.state}} </td>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.dateOfAdmission.date() }}</td>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.typeOfBed }}</td>
+
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

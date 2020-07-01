@@ -3,41 +3,38 @@ from application import app, db
 from application.forms import LoginForm
 from application.models import *
 
-def userType(userName):
-    if userName[:2]=="RE":
-        user_type = "Registar"
-    elif userName[:2]=="PS":
-        user_type = "Pharmacist"
-    else:
-        user_type = "Diagnostic"
-    return user_type
-
+def get_data(request):
+    ssnId =  request.form['ssnId']
+    name = request.form['name']
+    age = request.form['age']
+    dateOfAdmission = request.form['dateOfAdmission']
+    typeOfBed = request.form['typeOfBed']
+    address = request.form['address']
+    state = request.form['state']
+    city = request.form['city']
+    return {'patientSSN':ssnId, 'name':name, 'age':age, 'dateOfAdmission':dateOfAdmission, 'typeOfBed':typeOfBed, 'address':address, 'state':state, 'city':city}
 
 @app.route('/home',methods=['GET','POST'])
 def home():	
     if not session.get('userName'):
         return redirect('/')
-    return render_template('create_patient.html', user_type = userType(session.get('userName')))
+    return render_template('create_patient.html')
 
 @app.route('/add_patient', methods = ['GET', 'POST'])
 def add_patient():
     if not session.get('userName'):
         redirect('/')
-    if request.method == 'POST':
-        ssnId =  request.form['ssnId']
-        name = request.form['name']
-        age = request.form['age']
-        dateOfAdmission = request.form['dateOfAdmission']
-        typeOfBed = request.form['typeOfBed']
-        address = request.form['address']
-        state = request.form['state']
-        city = request.form['city']
+    if request.method == 'POST' and session.get('userName'):
+        request_dic = get_data(request)
         #creating patient object
-        patient = Patient(patientSSN = ssnId, name = name, age = age, dateOfAdmission = dateOfAdmission, typeOfBed = typeOfBed, address = address, state = state, city = city, status = "Active")
+        patient = Patient(patientSSN = request_dic['patientSSN'], name = request_dic['name'], age = request_dic['age'], dateOfAdmission = request_dic['dateOfAdmission'], typeOfBed = request_dic['typeOfBed'], address = request_dic['address'], state = request_dic['state'], city = request_dic['city'], status = "Active")
         db.session.add(patient)
-        db.session.commit()
+        try: 
+            db.session.commit()
+        except:
+            flash("Your entered data is incorrect", "danger")
+            return render_template("create_patient.html")
         flash("Patient creation initiated successfully", "success")
-        print("added")
         return render_template("create_patient.html")
     else: 
         return redirect("/")
@@ -57,10 +54,24 @@ def viewPatient():
             address =  patient_obj.address
             state =  patient_obj.state
             city = patient_obj.city
-            return render_template('view.html', patientid = patientid, name = name, age = age , dateOfAdmission = dateOfAdmission, typeOfBed=typeOfBed, address=address, state=state, city=city)
+            return render_template('view.html', patientid = patientid, name = name, age = age , dateOfAdmission = dateOfAdmission.date(), typeOfBed=typeOfBed, address=address, state=state, city=city)
         else: 
             flash("Please enter the patientId", 'danger')
     return render_template('view.html')
+
+@app.route("/update_patient", methods = ['GET', 'POST'])
+def updatePatient():
+    if not session.get('userName'):
+        return redirect('/')
+    return render_template('update.html')
+
+@app.route("/show_patients")
+def show_patients():
+    if not session.get('userName'):
+        return redirect('/')
+    patient = Patient.query.all()
+    return render_template("show_patients.html", patient=patient)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
