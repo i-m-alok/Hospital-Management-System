@@ -1,78 +1,76 @@
 {% extends "base.html" %}
-{% block title %}View Patient{% endblock%}
-
-{% block head%}
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <style>
-      .header {
-    padding: 4px;
-    text-align: center;
-    background: #1abc9c;
-    color: white;
-    font-size: 20px;
-    position: absoulute;
-    }
-
-    .pure-menu-link{
-        background: rgb(66, 184, 221);
-        
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-    }
-    .pure-menu-list{
-        padding-bottom: 10px;
-    }
-    .search-container button:hover {
-    background: #ccc;
-  }
-  .search-container {
-      float: none;
-    }
-  </style>
-{% endblock %}
 {% block body %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  
+  <title>
+    my project
+  </title>
+  
+</head>
+<style>
+  body{
+    background-color:skyblue;
+  }
+  .search-container button:hover {
+  background: #ccc;
+}
+.search-container {
+    float: none;
+  }
+</style>
+
+    
     <body>
       <h1 style="text-align: center;">View Patient</h1>
-      <form style="padding-left: 380px" class="pure-form pure-form-aligned" action='{{ url_for('viewPatient') }}' method="post">
+      <form style="padding-left: 380px" class="pure-form pure-form-aligned">
 
     <fieldset>
         <div class="pure-control-group">
             <label for="aligned-SSN">Patient ID *</label>
-            <input type="text" placeholder="{{ patientid }}" name="search">
+            <input type="text" placeholder="Search.." name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
         </div>
         <div class="pure-control-group">
             <label for="aligned-name">Patient Name*</label>
-            <input type="text" id="name" placeholder="{{ name }}" />
+            <input type="text" id="name" placeholder="" />
         </div>
         <div class="pure-control-group">
             <label for="aligned-age">Patient Age *</label>
-            <input type="number" id="age" placeholder="{{ age }}" />
+            <input type="number" id="age" placeholder="" />
         </div>
         <div class="pure-control-group">
             <label for="aligned-admission">Date of Admission *</label>
-            <input type="text" id="admission" placeholder="{{ dateOfAdmission }}" />
+            <input type="date" id="admission" placeholder="" />
         </div>
         <div><label style="padding-left: 80px" for="aligned-states">Type of bed *</label>
-            <input type="text" id="bed" placeholder="{{ typeOfBed }}" />
+         
      </div><br>
               <div class="pure-control-group">
             <label for="aligned-address">address *</label>
-            <textarea rows="4" cols="50" name="comment" placeholder='{{ address }}'></textarea>
+            <textarea rows="4" cols="50" name="comment" form="usrform"></textarea>
             </div>
 
           <div class="pure-control-group">
-        <label for="State">State</label>
-        <input type="text" id="bed" placeholder="{{ state }}" />
-    </div>     <div style="padding-left: 150px">
-                <td>City</td>
-                    <td>
-                    <input type="text" id="bed" placeholder="{{ city }}" />
-                    </td>
-                </div>
+      <label for="State">State</label> 
+            <input type="text" name="state">
+          </div>     
+         <div>
+        <label for="city" id="select2">City *</label>
+         <input type="text" name="city">
+          </div>
+      <br>
+         <div>
+            <label style="padding-left: 80px">*Mandatory</label>
+          </div>
             
     </fieldset>
 </form>
+</body>
+</html>
+
     </div>
 {% endblock %}
