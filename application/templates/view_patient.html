@@ -24,7 +24,7 @@ Patient Registration
       <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Patient Id</th>
       <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Name</th>
       <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Age</th>
-      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Adress</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Address</th>
       <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">DOJ</th>
       <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Type Of Room</th>
     </tr>
@@ -34,7 +34,7 @@ Patient Registration
         <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.name }}</td>
         <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.age }}</td>
         <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.address}}, {{ p.city}}, {{p.state}} </td>
-        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.dateOfAdmission }}</td>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.dateOfAdmission.date() }}</td>
         <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ p.typeOfBed }}</td>
 
     </tr>
