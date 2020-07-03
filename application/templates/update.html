@@ -1,80 +1,114 @@
 {% extends "base.html" %}
-{% block body %}
-<!DOCTYPE html>
-<html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <title>
-    my project
-  </title>
-  
-</head>
+{% block title %}Update Patient{% endblock%}
 
-    
+{% block head%}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="{{url_for('static', filename='state.js')}}"></script>
+  <style>
+      .header {
+    padding: 4px;
+    text-align: center;
+    background: #1abc9c;
+    color: white;
+    font-size: 20px;
+    position: absoulute;
+    }
+
+    .pure-menu-link{
+        background: rgb(66, 184, 221);
+        
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+    .pure-menu-list{
+        padding-bottom: 10px;
+    }
+    .search-container button:hover {
+    background: #ccc;
+  }
+  .search-container {
+      float: none;
+    }
+  </style>
+{% endblock %}
+{% block body %}
     <body>
       <h1 style="text-align: center;">Update Patient</h1>
-      <form style="padding-left: 380px" class="pure-form pure-form-aligned">
+      <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{% if task=='search' %}{{ url_for('getPatient') }} {% elif task=="update" %}{{ url_for('updatePatient') }} {% endif %}" method='post'>
 
     <fieldset>
         <div class="pure-control-group">
             <label for="aligned-SSN">Patient ID *</label>
-            <input type="text" id="SSN" placeholder="" />
-            <button type="get" name="get" class="pure-button pure-button-primary">Get</button>
+            {% if task=='search' %}
+                <input type="text" id="SSN" name="search" placeholder="" />
+                <button type="get" name="get" class="pure-button pure-button-primary">Get</button>
+            {% elif task=='update' %}
+                <input type="text" id="SSN" placeholder="" name="search" value="{{ patientid }}" readonly/>
+            {% endif %}
         </div>
         <div class="pure-control-group">
             <label for="aligned-name">Patient Name*</label>
-            <input type="text" id="name" placeholder="" />
+            <input type="text" name="name" id="name" value="{{ name }}" />
         </div>
         <div class="pure-control-group">
             <label for="aligned-age">Patient Age *</label>
-            <input type="number" id="age" placeholder="" />
+            <input type="number" id="age" name="age" value="{{ age }}" />
         </div>
         <div class="pure-control-group">
             <label for="aligned-admission">Date of Admission *</label>
-            <input type="date" id="admission" placeholder="" />
+            <input type="date" name="dateOfAdmission" id="admission" value="{{ dateOfAdmission }}"/>
         </div>
         <div><label style="padding-left: 80px" for="aligned-states">Type of bed *</label>
-         <select name=list>
-          <option value="">Select type..</option>
-          <option value="type-1">type-1</option>
-          <option value="type-2">type-2</option>
-          <option value="type-3">type-3</option>
+         <select name="typeOfBed">
+            <option value="">Select type..</option>
+            {% if typeOfBed  == 'type-1' %}
+                <option value="type-1" selected>type-1</option>
+                <option value="type-2">type-2</option>
+                <option value="type-3">type-3</option>
+            {% elif typeOfBed  == 'type-2' %}
+                <option value="type-1">type-1</option>
+                <option value="type-2" selected>type-2</option>
+                <option value="type-3">type-3</option>
+            {% elif typeOfBed  == 'type-3' %}
+                <option value="type-1">type-1</option>
+                <option value="type-2">type-2</option>
+                <option value="type-3" selected>type-3</option>
+            {% endif %}
          </select>
      </div><br>
               <div class="pure-control-group">
-            <label for="aligned-address">address *</label>
-            <textarea rows="4" cols="50" name="comment" form="usrform"></textarea>
+            <label for="aligned-address">Address *</label>
+            <input type="textarea" name="address" value="{{ address }}"></input>
             </div>
 
           <div class="pure-control-group">
       <label for="State">State</label>
-      <select name=list id="select1"  name="state" onchange="populate(this.id,'select2')">
-     <option value="">Select</option>
-                            <option value="chandigarh">Chandigarh</option>
-                            <option value="Delhi">Delhi</option>
-                            <option value="Haryana">Haryana</option>
-                            <option value="Himachal Pradesh">Himachal Pradesh</option>
-                            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
-                            <option value="Ladakh">Ladakh</option>
-                            <option value="Punjab">Punjab</option>
-                            <option value="Rajasthan">Rajasthan</option>
-                            <option value="Uttarakhand">Uttarakhand</option>
-                            <option value="Uttarpradesh">Uttar Pradesh</option>
-            </select>
+        <select id="select1"  name="state" onchange="populate(this.id,'select2')">
+            <option>Select</option>
+            <option value="Delhi" {% if state == 'Delhi' %}selected{% endif%}> Delhi</option>
+            <option value="Haryana" {% if state == 'Haryana' %}selected{% endif%}>Haryana</option>
+            <option value="Himachal Pradesh" {% if state == 'Himachal Pradesh' %}selected{% endif%}>Himachal Pradesh</option>
+            <option value="Jammu and Kashmir" {% if state == 'Jammu and Kashmir' %}selected{% endif%}>Jammu and Kashmir</option>
+            <option value="Ladakh" {% if state == 'Ladakh' %}selected{% endif%}>Ladakh</option>
+            <option value="Punjab" {% if state == 'Punjab' %}selected{% endif%}>Punjab</option>
+            <option value="Rajasthan" {% if state == 'Rajasthan' %}selected{% endif%}>Rajasthan</option>
+            <option value="Uttarakhand" {% if state == 'Uttarakhand' %}selected{% endif%}>Uttarakhand</option>
+            <option value="Uttarpradesh" {% if state == 'Uttarpradesh' %}selected{% endif%}>Uttar Pradesh</option>
+        </select>
     </div>     <div style="padding-left: 150px">
                 <td>City</td>
                     <td>
-                        <select  id="select2"  name="city">
+                        <select  id="select2" name="city">
                             <option value="">Select</option>
 
                         </select>
                     </td>
                 </div>
              <div class="pure-controls">
-            
+            {% if task=="update" %}
             <button type="Update" class="pure-button pure-button-primary">Update</button>
-            
+            {% endif %}
         </div>
     </fieldset>
 </form>

@@ -39,39 +39,39 @@
     <fieldset>
         <div class="pure-control-group">
             <label for="aligned-SSN">Patient ID *</label>
-            <input type="text" placeholder="{{ patientid }}" name="search">
+            <input type="text" value="{{ patientid }}" name="search">
       <button type="submit"><i class="fa fa-search"></i></button>
         </div>
         <div class="pure-control-group">
             <label for="aligned-name">Patient Name*</label>
-            <input type="text" id="name" placeholder="{{ name }}" />
+            <input type="text" id="name" value="{{ name }}" readonly/>
         </div>
         <div class="pure-control-group">
             <label for="aligned-age">Patient Age *</label>
-            <input type="number" id="age" placeholder="{{ age }}" />
+            <input type="number" id="age" value="{{ age }}" readonly/>
         </div>
         <div class="pure-control-group">
             <label for="aligned-admission">Date of Admission *</label>
-            <input type="text" id="admission" placeholder="{{ dateOfAdmission }}" />
+            <input type="text" id="admission" value="{{ dateOfAdmission }}"  readonly/>
         </div>
         <div><label style="padding-left: 80px" for="aligned-states">Type of bed *</label>
-            <input type="text" id="bed" placeholder="{{ typeOfBed }}" />
+            <input type="text" id="bed" value="{{ typeOfBed }}" readonly/>
      </div><br>
               <div class="pure-control-group">
             <label for="aligned-address">address *</label>
-            <textarea rows="4" cols="50" name="comment" placeholder='{{ address }}'></textarea>
+            <input type="text" value='{{ address }}' readonly></input>
             </div>
 
           <div class="pure-control-group">
         <label for="State">State</label>
-        <input type="text" id="bed" placeholder="{{ state }}" />
-    </div>     <div style="padding-left: 150px">
-                <td>City</td>
-                    <td>
-                    <input type="text" id="bed" placeholder="{{ city }}" />
-                    </td>
-                </div>
-            
+        <input type="text" id="bed" value="{{ state }}" />
+    </div>     
+    <div style="padding-left: 150px">
+      <td>City</td>
+      <td>
+        <input type="text" id="bed" value="{{ city }}" readonly/>
+      </td>
+    </div>
     </fieldset>
 </form>
     </div>
