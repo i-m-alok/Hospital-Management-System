@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}
+Patient Registration
+{% endblock %}
+
+{% block heading %}
+<center>
+   Pharmacy
+</center>
+
+{% endblock %}
+
+{% block content %}
+<ul style="list-style-type: none; float: right; font-size: large; width: 8.0em; ">
+  <li style="display:inline"><a href="{{url_for('logout')}}" style="text-decoration: none  ">LOGOUT</a></li>
+</ul>
+<br>
+
+
+<table style="border: 1px solid black; border-collapse: collapse; margin: 0 auto; ">
+	<tr>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Patient Id</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Name</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Age</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Address</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">DOJ</th>
+      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Type Of Bed</th>
+    </tr>
+    
+    <tr>
+        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">
+          <form method="POST" action="{{url_for('fetchpatientmedicinedetails')}}">
+            <label for="aligned-SSN"></label>
+            <input type="text" placeholder="{{ patientid }}" name="patid">
+            <button type="submit"><i class="fa fa-search"></i>GET</button>
+          </form>
+          </td>
+          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ name }}</td>
+          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ age }}</td>
+          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ address }}</td>
+          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ dateOfAdmission }}</td>
+          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ typeOfBed }}</td>
+
+
+    </tr>
+  </table>
+    
+
+
+
+{% endblock %}
