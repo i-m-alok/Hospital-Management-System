@@ -14,8 +14,8 @@
 					<li class="pure-menu-item pure-menu-has-children pure-menu-allow-hover"> <a href="#" id="menuLink1" class="pure-menu-link">Patient</a>
 						<ul class="pure-menu-children">
 							<li class="pure-menu-item"> <a href="{{ url_for('home') }}" class="pure-menu-link">Patient Regitration</a> </li>
-							<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Update Patient</a> </li>
-							<li class="pure-menu-item"> <a href="#" class="pure-menu-link">Delete Patient</a> </li>
+							<li class="pure-menu-item"> <a href="{{ url_for('getPatient', feature="update") }}" class="pure-menu-link">Update Patient</a> </li>
+							<li class="pure-menu-item"> <a href="{{ url_for('getPatient', feature="delete") }}" class="pure-menu-link">Delete Patient</a> </li>
 							<li class="pure-menu-item"> <a href="{{ url_for('viewPatient') }}" class="pure-menu-link">View Patient</a> </li>
 						</ul>
 					</li>
@@ -38,7 +38,7 @@
 					</ul>
 				</li>
 				{% endif %}
-				<li> 
+				<li class="pure-menu-item"> 
                     {% if session.get('userName') %}
 					    <button type="submit" class="pure-button"><a href='{{url_for("logout") }}'>Logout</a></button> 
                     {% endif %} 

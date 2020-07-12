@@ -35,7 +35,7 @@
 {% block body %}
     <body>
       <h1 style="text-align: center;">Update Patient</h1>
-      <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{% if task=='search' %}{{ url_for('getPatient') }} {% elif task=="update" %}{{ url_for('updatePatient') }} {% endif %}" method='post'>
+      <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{% if task=='search' %}{{ url_for('getPatient', feature='update') }} {% elif task=="update" %}{{ url_for('updatePatient') }} {% endif %}" method='post'>
 
     <fieldset>
         <div class="pure-control-group">
