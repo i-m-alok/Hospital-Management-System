@@ -189,10 +189,10 @@ def fetchIssuedMedicine():
                     'name': medicine.name,
                     'rate': medicine.cost
                 }
-            return render_template('issue_patient.html', patientid=patientid, patient_data=patient_data, medicines=med)
+            return render_template('issued_medicine.html', patientid=patientid, patient_data=patient_data, medicines=med)
         else:
             flash("Please enter a valid Patient Id", 'danger')
-    return render_template('issue_patient.html')
+    return render_template('issued_medicine.html')
 
 
 # Login and Logout Feature
