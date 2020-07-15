@@ -33,7 +33,6 @@
   </style>
 {% endblock %}
 {% block body %}
-    <body>
       <h1 style="text-align: center;">Update Patient</h1>
       <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{% if task=='search' %}{{ url_for('getPatient', feature='update') }} {% elif task=="update" %}{{ url_for('updatePatient') }} {% endif %}" method='post'>
 
@@ -112,8 +111,5 @@
         </div>
     </fieldset>
 </form>
-</body>
-</html>
-
-    </div>
+</div>
 {% endblock %}

@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Add Medicine{% endblock%}
+
+{% block head%}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/purecss@2.0.3/build/pure-min.css" integrity="sha384-cg6SkqEOCV1NbJoCu11+bm0NvBRc8IYLRGXkmNrqUBfTjmMYwNKPWBTIKyw9mHNJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="{{url_for('static', filename='state.js')}}"></script>
+  <style>
+      .header {
+    padding: 4px;
+    text-align: center;
+    background: #1abc9c;
+    color: white;
+    font-size: 20px;
+    position: absoulute;
+    }
+
+    .pure-menu-link{
+        background: rgb(66, 184, 221);
+        
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    }
+    .pure-menu-list{
+        padding-bottom: 10px;
+    }
+    .search-container button:hover {
+    background: #ccc;
+  }
+  .search-container {
+      float: none;
+    }
+  </style>
+{% endblock %}
+{% block body %}
+    <h1 style="text-align: center;">Add medicine <span name="patientid">{{patientid}}</span></h1>
+    <div>
+        <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{{ url_for('addMedicine', patientid=patientid) }}" method='post'>
+            <table style="border: 1px solid black; border-collapse: collapse; margin: 0 auto; ">
+                <tr>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Medicine</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Available</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Quantity</th>
+                    <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;"></th>
+                </tr>
+                <tr>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">
+                            <select name="medicine">
+                                {% for medicine in  medicines %}
+                                <option value="{{medicine.id}}" selected>{{medicine.name}}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{availability}}</td>
+                        <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;"><input type='text' name="quantityIssued" required/></td>
+                        <td><button type="submit" class="btn btn-secondary">Add Medicines</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <br>
+    <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{{ url_for('fetchIssuedMedicine') }}" method='post'>
+        <input name="patientid" value="{{patientid}}" hidden>
+        <button type="submit" class="btn btn-secondary">Back</button>
+    </form>
+{% endblock %}

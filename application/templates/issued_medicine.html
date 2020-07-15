@@ -90,5 +90,9 @@ Patient Registration
                 </tr>
             {% endfor %}
         </table>
-    {% endif %}
+    {% endif %} 
+<br>
+<center>
+    <button type="get" name="get" class="btn btn-secondary"><a href="{{ url_for('getMedicine', patientid = patientid) }}">Add Medicines</a></button>
+</center>
 {% endblock %}

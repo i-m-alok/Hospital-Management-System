@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, session, redirect, request
+from flask import Flask, render_template, flash, session, redirect, request, url_for
 from application import app, db
 from application.forms import LoginForm
 from application.models import *
@@ -164,7 +164,7 @@ def show_patients():
     patient = Patient.query.filter_by(status="Active").all()
     return render_template("show_patients.html", patient=patient)
 
-#fetch medicine
+#fetch medicines of patient
 
 
 @app.route("/fetch_medicine", methods=['GET', 'POST'])
@@ -194,6 +194,40 @@ def fetchIssuedMedicine():
             flash("Please enter a valid Patient Id", 'danger')
     return render_template('issued_medicine.html')
 
+
+#get medicine
+@app.route("/getMedicine/<patientid>", methods=['GET', 'POST'])
+def getMedicine(patientid):
+    medicines = Medicine.query.all()
+    return render_template('add_medicine.html', medicines=medicines, patientid=patientid)
+
+#Add medicine
+
+
+@app.route("/addMedicine/<patientid>", methods=['GET', 'POST'])
+def addMedicine(patientid):
+    #patient = Patient.query.filter_by(id=patientid).first()
+    if request.method == "POST":
+        medicineId = request.form.get('medicine')
+        quantityIssued = int(request.form.get('quantityIssued'))
+        if medicineId:
+            medicine = Medicine.query.filter_by(id=medicineId).first()
+            #avaialablity checkup
+            if medicine.available > quantityIssued:
+                medicine.available -= quantityIssued
+                availability = "Yes"
+            else:
+                availability = "No"
+                flash("Sorry, insufficient medicine", "danger")
+                return redirect(url_for('getMedicine', patientid=patientid))
+            bill = billing.insert().values(patientId=patientid, medicineId=medicineId,
+                                           pieces=quantityIssued, cost=quantityIssued * medicine.cost)
+            db.session.execute(bill)
+            db.session.commit()
+            flash("Medicine Issued", "success")
+            return redirect(url_for('getMedicine', patientid=patientid))
+    flash("Get request on add medicine", "danger")
+    return render_template('add_medicine.html')
 
 # Login and Logout Feature
 
