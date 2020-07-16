@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Issued Medicines
+Patient Billing
 {% endblock %}
 
 {% block head%}
@@ -36,22 +36,23 @@ Issued Medicines
 {% block body %}
 
 <br>
-<h1 style="text-align: center;">{% if details=='medicine' %}Pharmacy{% elif details=='test' %}Test{% endif %}</h1>
+<h1 style="text-align: center;">Patient Billing</h1>
  
 
 <table style="border: 1px solid black; border-collapse: collapse; margin: 0 auto; ">
 	<tr>
-      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Patient Id</th>
-      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Name</th>
-      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Age</th>
-      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Address</th>
-      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">DOJ</th>
-      <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Type Of Bed</th>
+        <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Patient Id</th>
+        <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Name</th>
+        <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Age</th>
+        <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Address</th>
+        <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">DOJ</th>
+        <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Date Of Discharge</th>
+        <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Type Of Bed</th>
     </tr>
     
     <tr>
         <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">
-          <form method="POST" action="{% if details=="medicine" %}{{url_for('fetchIssuedMedicine', details = 'medicine')}}{% elif details=="test" %}{{url_for('fetchIssuedMedicine', details = 'test')}} {% endif %}">
+          <form method="POST" action="{{url_for('fetchIssuedMedicine', details='test&&medicine')}}">
             <label for="aligned-SSN"></label>
             {% if patient_data %}
                 <input type="text" value="{{ patientid }}" name="patientid">
@@ -62,18 +63,19 @@ Issued Medicines
           </form>
           </td>
           {% if patient_data %}
-          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['name'] }}</td>
-          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['age'] }}</td>
-          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['address'] }}</td>
-          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['dateOfAdmission'] }}</td>
-          <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['typeOfBed'] }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['name'] }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['age'] }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['address'] }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['dateOfAdmission'] }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ dateOfDischarged }}</td>
+            <td style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left;">{{ patient_data['typeOfBed'] }}</td>
           {% endif %}
     </tr>
 </table>
+{% if totalDetails %}<h5 style="text-align: center;">No.of Days: {{totalDetails.get('noOfDays')}},  Bill For Rooms: Rs.{{totalDetails.get('roomCharge')}} </h5>{% endif %}
 <br>
 <!--Medicines table-->
-{% if medicines %}
-<h1 style="text-align: center;">Medicines Issued</h1>
+<h1 style="text-align: center;">Pharmacy Charges</h1>
     <table style="border: 1px solid black; border-collapse: collapse; margin: 0 auto; ">
         <tr>
             <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Medicine</th>
@@ -92,10 +94,9 @@ Issued Medicines
         {% endfor %}
     </table>
     <br>
-
-<!--Test table -->
-{% elif tests %}
-<h1 style="text-align: center;">Test Conducted</h1>
+{% if totalDetails %}<h5 style="text-align: center;">Bill For Pharmacy: Rs.{{ totalDetails.get('medicineTotal') }} </h5>{% endif %}
+<!--Diagnostic Table-->>
+<h1 style="text-align: center;">Diagnostic Charges</h1>
     <table style="border: 1px solid black; border-collapse: collapse; margin: 0 auto; ">
         <tr>
             <th style="border: 1px solid black; border-collapse: collapse; padding: 5px; text-align: left; background-color: grey;">Test</th>
@@ -108,15 +109,14 @@ Issued Medicines
             </tr>
         {% endfor %}
     </table>
+{% if totalDetails %}<h5 style="text-align: center;">Bill For Diagnostic: Rs.{{totalDetails.get('testTotal')}} </h5>
     <br>
+    <br>
+    <h5 style="text-align: center;">Grand Total: Rs.{{totalDetails.get('total')}}</h5>
 {% endif %}
-{% if details=='medicine' %}
-<center>
-        <button type="get" name="get" class="btn btn-secondary"><a href="{{ url_for('getMedicine', patientid = patientid) }}">Add Medicines</a></button>
-</center>
-{% elif details=='test' %}
     <center>
-        <button type="get" name="get" class="btn btn-secondary"><a href="{{ url_for('getTest', patientid = patientid) }}">Add Test</a></button>
+    <form method="POST" action="{{url_for('dischargePatient', patientid=patientid)}}">
+        <button type="get" name="get" class="btn btn-secondary">Confirm</button>
+    </form>
     </center>
-{% endif %}
 {% endblock %}

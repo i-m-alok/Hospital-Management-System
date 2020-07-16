@@ -1,3 +1,4 @@
+from datetime import date
 from flask import Flask, render_template, flash, session, redirect, request, url_for
 from application import app, db
 from application.forms import LoginForm
@@ -26,6 +27,14 @@ def get_data_from_patient_obj(patient_obj):
     state = patient_obj.state
     city = patient_obj.city
     return {'patientSSN': ssnId, 'name': name, 'age': age, 'dateOfAdmission': dateOfAdmission, 'typeOfBed': typeOfBed, 'address': address, 'state': state, 'city': city}
+
+def calculateRoomCharges(typeofBed, noOfDays):
+    if typeofBed == 'type-1':
+        return noOfDays * 2000
+    elif typeofBed == 'type-2':
+        return noOfDays * 4000
+    else:
+        return noOfDays * 8000
 
 # Home
 
@@ -167,46 +176,108 @@ def show_patients():
 #fetch medicines of patient
 
 
-@app.route("/fetch_medicine", methods=['GET', 'POST'])
-def fetchIssuedMedicine():
+@app.route("/fetch/<details>", methods=['GET', 'POST'])
+def fetchIssuedMedicine(details):
     if not session.get("userName"):
-        return redirect("/home")
+        return redirect("/")
     if request.method == 'POST':
         patientid = request.form['patientid']
         patient_obj = Patient.query.filter_by(id=patientid).first()
         if patient_obj:
             patient_data = get_data_from_patient_obj(patient_obj)
             #to find the bills belongs to medicine
-            bill = db.session.query(billing).filter(
-                billing.c.patientId == 1).filter(billing.c.medicineId != None).all()
-            med = {}
-            for each in bill:
-                medicine = Medicine.query.filter_by(id=each[2]).first()
-                #initialize dictionary for medicines
-                med[each[2]] = {
-                    'quantity': each[4],
-                    'amount': each[5],
-                    'name': medicine.name,
-                    'rate': medicine.cost
+            if details=='medicine':
+                bill = db.session.query(billing).filter(
+                    billing.c.patientId == patientid).filter(billing.c.medicineId != None).all()
+                med = {}
+                for each in bill:
+                    medicine = Medicine.query.filter_by(id=each[2]).first()
+                    #initialize dictionary for medicines
+                    med[each[2]] = {
+                        'quantity': each[4],
+                        'amount': each[5],
+                        'name': medicine.name,
+                        'rate': medicine.cost
+                    }
+                return render_template('issued_medicine.html', patientid=patientid, patient_data=patient_data, medicines=med, details = 'medicine')
+            #to find the bills belongs to tests
+            elif details == 'test':
+                bill = db.session.query(billing).filter(
+                    billing.c.patientId == patientid).filter(billing.c.testId != None).all()
+                tests = {}
+                for each in bill:
+                    test = Test.query.filter_by(id=each[3]).first()
+                    tests[each[3]] = {
+                        'amount': each[5],
+                        'name': test.name
+                    }
+                return render_template('issued_medicine.html', patientid=patientid, patient_data=patient_data, tests=tests, details='test')
+            elif details == 'test&&medicine':
+                #all test bills
+                testBill = db.session.query(billing).filter(billing.c.patientId == patientid).filter(billing.c.testId != None).all()
+                #all medicine bills
+                medicineBill = db.session.query(billing).filter(
+                    billing.c.patientId == patientid).filter(billing.c.medicineId != None).all()
+                medicines = {}
+                medicineTotal = 0
+                tests = {}
+                testTotal = 0
+                for each in testBill:
+                    test = Test.query.filter_by(id=each[3]).first()
+                    tests[each[3]] = {
+                        'amount': each[5],
+                        'name': test.name
+                    }
+                    testTotal+=each[5]
+                for each in medicineBill:
+                    medicine = Medicine.query.filter_by(id=each[2]).first()
+                    #initialize dictionary for medicines
+                    medicines[each[2]] = {
+                        'quantity': each[4],
+                        'amount': each[5],
+                        'name': medicine.name,
+                        'rate': medicine.cost
+                    }
+                    medicineTotal=each[5]
+                dateOfDischarged = date.today()
+                noOfDays = (dateOfDischarged - patient_data['dateOfAdmission']).days
+                roomCharge = calculateRoomCharges(patient_data['typeOfBed'], noOfDays)
+                total = roomCharge+medicineTotal+testTotal
+                totalDetails = {
+                    'noOfDays': noOfDays,
+                    'roomCharge': roomCharge,
+                    'medicineTotal': medicineTotal,
+                    'testTotal': testTotal,
+                    'total': total
                 }
-            return render_template('issued_medicine.html', patientid=patientid, patient_data=patient_data, medicines=med)
+                return render_template('fetch_bill.html', patientid=patientid, patient_data=patient_data, dateOfDischarged=dateOfDischarged, tests=tests, medicines=medicines, totalDetails=totalDetails)
         else:
             flash("Please enter a valid Patient Id", 'danger')
-    return render_template('issued_medicine.html')
+    return render_template('issued_medicine.html', details=details)
 
 
 #get medicine
 @app.route("/getMedicine/<patientid>", methods=['GET', 'POST'])
 def getMedicine(patientid):
+    if not session.get("userName"):
+        return redirect("/")
     medicines = Medicine.query.all()
     return render_template('add_medicine.html', medicines=medicines, patientid=patientid)
 
+#get tests
+@app.route("/getTest/<patientid>", methods=['GET', 'POST'])
+def getTest(patientid):
+    if not session.get("userName"):
+        return redirect("/")
+    tests = Test.query.all()
+    return render_template('add_diagnostics.html', tests=tests, patientid=patientid)
+
 #Add medicine
-
-
 @app.route("/addMedicine/<patientid>", methods=['GET', 'POST'])
 def addMedicine(patientid):
     #patient = Patient.query.filter_by(id=patientid).first()
+    if not session.get("userName"):
+        return redirect("/")
     if request.method == "POST":
         medicineId = request.form.get('medicine')
         quantityIssued = int(request.form.get('quantityIssued'))
@@ -229,8 +300,43 @@ def addMedicine(patientid):
     flash("Get request on add medicine", "danger")
     return render_template('add_medicine.html')
 
-# Login and Logout Feature
 
+# Add tests
+@app.route("/addTest/<patientid>", methods=['GET', 'POST'])
+def addTest(patientid):
+    #patient = Patient.query.filter_by(id=patientid).first()
+    if not session.get("userName"):
+        return redirect("/")
+    if request.method == "POST":
+        testId = request.form.get('test')
+        if testId:
+            test = Test.query.filter_by(id=testId).first()
+            bill = billing.insert().values(patientId=patientid, testId=testId,
+                                           cost=test.cost)
+            db.session.execute(bill)
+            db.session.commit()
+            flash("test Issued", "success")
+            return redirect(url_for('getTest', patientid=patientid))
+    flash("Get request on add test", "danger")
+    return render_template('add_diagnostics.html')
+
+#Billing 
+@app.route('/bill', methods=['GET', 'POST'])
+def fetchBill():
+    if not session.get("userName"):
+        return redirect('/')
+    return render_template('fetch_bill.html')
+
+#discharge patient
+@app.route('/discharge_patient/<patientid>', methods=['POST'])
+def dischargePatient(patientid):
+    if request.method == 'POST':
+        patient = Patient.query.filter_by(id=patientid).first()
+        patient.status = 'Discharged'
+        db.session.commit()
+        flash('Patient is successfully discharged','success')
+        return redirect("/home")
+# Login and Logout Feature
 
 @app.route('/', methods=['GET', 'POST'])
 def login():

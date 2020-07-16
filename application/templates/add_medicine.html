@@ -59,7 +59,7 @@
         </form>
     </div>
     <br>
-    <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{{ url_for('fetchIssuedMedicine') }}" method='post'>
+    <form style="padding-left: 380px" class="pure-form pure-form-aligned" action="{{ url_for('fetchIssuedMedicine', details='medicine') }}" method='post'>
         <input name="patientid" value="{{patientid}}" hidden>
         <button type="submit" class="btn btn-secondary">Back</button>
     </form>
