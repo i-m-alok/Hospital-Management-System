@@ -80,7 +80,11 @@ def viewPatient():
         patientid = request.form['search']
         if patientid:
             patient_obj = Patient.query.filter_by(id=patientid).first()
-            patient_dict = get_data_from_patient_obj(patient_obj)
+            if patient_obj:
+                patient_dict = get_data_from_patient_obj(patient_obj)
+            else:
+                flash("No patient with entered patientId", 'danger')
+                return render_template('view.html')
             return render_template('view.html', patientid=patientid,  name=patient_dict['name'], age=patient_dict['age'], dateOfAdmission=patient_dict['dateOfAdmission'], typeOfBed=patient_dict['typeOfBed'], address=patient_dict['address'], state=patient_dict['state'], city=patient_dict['city'])
         else:
             flash("Please enter the patientId", 'danger')
@@ -383,8 +387,12 @@ def init_db():
     db.session.commit()
 
     #insert users
-    user = User(userName="RE16153100", password="casestudy@12", roleId=1)
-    db.session.add(user)
+    user1 = User(userName="RE16153100", password="casestudy@12", roleId=1)
+    user2 = User(userName="PS16153100", password="12345", roleId=2)
+    user3 = User(userName="DS16153100", password="12345", roleId=3)
+    db.session.add(user1)
+    db.session.add(user2)
+    db.session.add(user3)
     db.session.commit()
 
     #insert tests
