@@ -1,8 +1,88 @@
-from datetime import date
 from flask import Flask, render_template, flash, session, redirect, request, url_for
-from application import app, db
-from application.forms import LoginForm
-from application.models import *
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+from forms import LoginForm
+from config import Config
+
+app = Flask(__name__)
+
+app.config.from_object(Config)
+
+ENV = 'prod'
+
+if ENV == 'dev':
+    app.debug = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:mathew@localhost/HMS"
+else:
+    app.debug = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://umtwytzrfjksiu:3948e36f02828e8bbd4566f0db3ae06c185d993d130b814f58be4d715a3ffc20@ec2-52-204-232-46.compute-1.amazonaws.com:5432/d926c1adt0q5vu"
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+
+class User(db.Model):
+    userName = db.Column(db.String(20), primary_key=True,
+                         unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    timeStamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    # roleId here is foreign key which references to role table
+    roleId = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
+    role = db.relationship('Role')
+
+
+class Role(db.Model):
+    __tablename__ = 'role'
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    role = db.Column(db.String, nullable=False)
+
+
+billing = db.Table('bill',
+                   db.Column('id', db.Integer, primary_key=True,
+                             unique=True, nullable=False),
+                   db.Column('patientId', db.Integer, db.ForeignKey(
+                       'patient.id'), nullable=False),
+                   db.Column('medicineId', db.Integer,
+                             db.ForeignKey('medicine.id')),
+                   db.Column('testId', db.Integer, db.ForeignKey('test.id')),
+                   db.Column('pieces', db.Integer),
+                   db.Column('cost', db.Float, nullable=False)
+                   )
+
+
+class Patient(db.Model):
+    __tablename__ = 'patient'
+    id = db.Column(db.Integer, primary_key=True,
+                   unique=True, autoincrement=True)
+    patientSSN = db.Column(db.Integer, primary_key=True, unique=True)
+    name = db.Column(db.String(30), nullable=False)
+    age = db.Column(db.Integer, db.CheckConstraint(
+        'age>0 and age<200'), nullable=False)
+    dateOfAdmission = db.Column(db.DateTime, default=datetime.utcnow)
+    typeOfBed = db.Column(db.String, nullable=False)
+    address = db.Column(db.String, nullable=False)
+    state = db.Column(db.String)
+    city = db.Column(db.String)
+    status = db.Column(db.String, nullable=False)
+    medicine_bill = db.relationship('Medicine', secondary=billing)
+    test_bill = db.relationship('Test', secondary=billing)
+
+
+class Medicine(db.Model):
+    __tablename__ = 'medicine'
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    available = db.Column(db.Integer, nullable=False)
+    cost = db.Column(db.Float, nullable=False)
+
+
+class Test(db.Model):
+    __tablename__ = 'test'
+    id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    cost = db.Column(db.Float, nullable=False)
 
 
 def get_data(request):
@@ -27,6 +107,7 @@ def get_data_from_patient_obj(patient_obj):
     state = patient_obj.state
     city = patient_obj.city
     return {'patientSSN': ssnId, 'name': name, 'age': age, 'dateOfAdmission': dateOfAdmission, 'typeOfBed': typeOfBed, 'address': address, 'state': state, 'city': city}
+
 
 def calculateRoomCharges(typeofBed, noOfDays):
     if typeofBed == 'type-1':
@@ -177,7 +258,7 @@ def show_patients():
     patient = Patient.query.filter_by(status="Active").all()
     return render_template("show_patients.html", patient=patient)
 
-#fetch medicines of patient
+# fetch medicines of patient
 
 
 @app.route("/fetch/<details>", methods=['GET', 'POST'])
@@ -189,22 +270,22 @@ def fetchIssuedMedicine(details):
         patient_obj = Patient.query.filter_by(id=patientid).first()
         if patient_obj:
             patient_data = get_data_from_patient_obj(patient_obj)
-            #to find the bills belongs to medicine
-            if details=='medicine':
+            # to find the bills belongs to medicine
+            if details == 'medicine':
                 bill = db.session.query(billing).filter(
                     billing.c.patientId == patientid).filter(billing.c.medicineId != None).all()
                 med = {}
                 for each in bill:
                     medicine = Medicine.query.filter_by(id=each[2]).first()
-                    #initialize dictionary for medicines
+                    # initialize dictionary for medicines
                     med[each[2]] = {
                         'quantity': each[4],
                         'amount': each[5],
                         'name': medicine.name,
                         'rate': medicine.cost
                     }
-                return render_template('issued_medicine.html', patientid=patientid, patient_data=patient_data, medicines=med, details = 'medicine')
-            #to find the bills belongs to tests
+                return render_template('issued_medicine.html', patientid=patientid, patient_data=patient_data, medicines=med, details='medicine')
+            # to find the bills belongs to tests
             elif details == 'test':
                 bill = db.session.query(billing).filter(
                     billing.c.patientId == patientid).filter(billing.c.testId != None).all()
@@ -217,9 +298,10 @@ def fetchIssuedMedicine(details):
                     }
                 return render_template('issued_medicine.html', patientid=patientid, patient_data=patient_data, tests=tests, details='test')
             elif details == 'test&&medicine':
-                #all test bills
-                testBill = db.session.query(billing).filter(billing.c.patientId == patientid).filter(billing.c.testId != None).all()
-                #all medicine bills
+                # all test bills
+                testBill = db.session.query(billing).filter(
+                    billing.c.patientId == patientid).filter(billing.c.testId != None).all()
+                # all medicine bills
                 medicineBill = db.session.query(billing).filter(
                     billing.c.patientId == patientid).filter(billing.c.medicineId != None).all()
                 medicines = {}
@@ -232,20 +314,22 @@ def fetchIssuedMedicine(details):
                         'amount': each[5],
                         'name': test.name
                     }
-                    testTotal+=each[5]
+                    testTotal += each[5]
                 for each in medicineBill:
                     medicine = Medicine.query.filter_by(id=each[2]).first()
-                    #initialize dictionary for medicines
+                    # initialize dictionary for medicines
                     medicines[each[2]] = {
                         'quantity': each[4],
                         'amount': each[5],
                         'name': medicine.name,
                         'rate': medicine.cost
                     }
-                    medicineTotal=each[5]
+                    medicineTotal = each[5]
                 dateOfDischarged = date.today()
-                noOfDays = (dateOfDischarged - patient_data['dateOfAdmission']).days
-                roomCharge = calculateRoomCharges(patient_data['typeOfBed'], noOfDays)
+                noOfDays = (dateOfDischarged -
+                            patient_data['dateOfAdmission']).days
+                roomCharge = calculateRoomCharges(
+                    patient_data['typeOfBed'], noOfDays)
                 total = roomCharge+medicineTotal+testTotal
                 totalDetails = {
                     'noOfDays': noOfDays,
@@ -260,7 +344,7 @@ def fetchIssuedMedicine(details):
     return render_template('issued_medicine.html', details=details)
 
 
-#get medicine
+# get medicine
 @app.route("/getMedicine/<patientid>", methods=['GET', 'POST'])
 def getMedicine(patientid):
     if not session.get("userName"):
@@ -268,7 +352,9 @@ def getMedicine(patientid):
     medicines = Medicine.query.all()
     return render_template('add_medicine.html', medicines=medicines, patientid=patientid)
 
-#get tests
+# get tests
+
+
 @app.route("/getTest/<patientid>", methods=['GET', 'POST'])
 def getTest(patientid):
     if not session.get("userName"):
@@ -276,7 +362,9 @@ def getTest(patientid):
     tests = Test.query.all()
     return render_template('add_diagnostics.html', tests=tests, patientid=patientid)
 
-#Add medicine
+# Add medicine
+
+
 @app.route("/addMedicine/<patientid>", methods=['GET', 'POST'])
 def addMedicine(patientid):
     #patient = Patient.query.filter_by(id=patientid).first()
@@ -287,7 +375,7 @@ def addMedicine(patientid):
         quantityIssued = int(request.form.get('quantityIssued'))
         if medicineId:
             medicine = Medicine.query.filter_by(id=medicineId).first()
-            #avaialablity checkup
+            # avaialablity checkup
             if medicine.available > quantityIssued:
                 medicine.available -= quantityIssued
                 availability = "Yes"
@@ -324,23 +412,28 @@ def addTest(patientid):
     flash("Get request on add test", "danger")
     return render_template('add_diagnostics.html')
 
-#Billing 
+# Billing
+
+
 @app.route('/bill', methods=['GET', 'POST'])
 def fetchBill():
     if not session.get("userName"):
         return redirect('/')
     return render_template('fetch_bill.html')
 
-#discharge patient
+# discharge patient
+
+
 @app.route('/discharge_patient/<patientid>', methods=['POST'])
 def dischargePatient(patientid):
     if request.method == 'POST':
         patient = Patient.query.filter_by(id=patientid).first()
         patient.status = 'Discharged'
         db.session.commit()
-        flash('Patient is successfully discharged','success')
+        flash('Patient is successfully discharged', 'success')
         return redirect("/home")
 # Login and Logout Feature
+
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -377,7 +470,7 @@ def init_db():
     db.drop_all()
     db.create_all()
 
-    #insert roles
+    # insert roles
     roles = {
         1: "Admin", 2: "Pharmacist", 3: "Diagnostic"
     }
@@ -386,8 +479,8 @@ def init_db():
         db.session.add(role)
     db.session.commit()
 
-    #insert users
-    user1 = User(userName="RE16153100", password="casestudy@12", roleId=1)
+    # insert users
+    user1 = User(userName="RE16153100", password="RE16153100", roleId=1)
     user2 = User(userName="PS16153100", password="12345", roleId=2)
     user3 = User(userName="DS16153100", password="12345", roleId=3)
     db.session.add(user1)
@@ -395,7 +488,7 @@ def init_db():
     db.session.add(user3)
     db.session.commit()
 
-    #insert tests
+    # insert tests
     tests = [(1, 'BP', 250), (2, 'ECG', 500), (3, 'X-Ray', 150)]
     for x in tests:
         test = Test(id=x[0], name=x[1], cost=x[2])
@@ -406,3 +499,7 @@ def init_db():
         medicine = Medicine(id=x[0], name=x[1], available=x[2], cost=x[3])
         db.session.add(medicine)
     db.session.commit()
+
+
+if __name__ == "__main__":
+    app.run()
