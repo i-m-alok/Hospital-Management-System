@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 app.config.from_object(Config)
 
-ENV = 'prod'
+ENV = 'dev'
 
 if ENV == 'dev':
     app.debug = True
@@ -134,11 +134,17 @@ def add_patient():
     if not session.get('userName'):
         redirect('/')
     if request.method == 'POST' and session.get('userName'):
-        request_dic = get_data(request)
-        # creating patient object
-        print(request.form)
-        patient = Patient(patientSSN=request_dic['patientSSN'], name=request_dic['name'], age=request_dic['age'], dateOfAdmission=request_dic['dateOfAdmission'],
-                          typeOfBed=request_dic['typeOfBed'], address=request_dic['address'], state=request_dic['state'], city=request_dic['city'], status="Active")
+        ssnId = request.form.get('ssnId')
+        name = request.form['name']
+        age = request.form['age']
+        dateOfAdmission = request.form['dateOfAdmission']
+        typeOfBed = request.form['typeOfBed']
+        address = request.form['address']
+        state = request.form['state']
+        city = request.form['city']
+
+        patient = Patient(patientSSN=ssnId, name=name, age=age, dateOfAdmission=dateOfAdmission,
+                          typeOfBed=typeOfBed, address=address, state=state, city=city, status="Active")
         db.session.add(patient)
         try:
             db.session.commit()
