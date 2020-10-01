@@ -16,7 +16,7 @@ if ENV == 'dev':
     app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:mathew@localhost/HMS"
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://umtwytzrfjksiu:3948e36f02828e8bbd4566f0db3ae06c185d993d130b814f58be4d715a3ffc20@ec2-52-204-232-46.compute-1.amazonaws.com:5432/d926c1adt0q5vu"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://ritywjjwncnjwl:4f895778799f51ab8a385c76fc9bbba99a5c576da461c721d6af870f5cef0293@ec2-54-90-68-208.compute-1.amazonaws.com:5432/d30am2lg1t8etv"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -461,44 +461,6 @@ def logout():
     session['userName'] = False
     session['role'] = False
     return redirect('/')
-
-#######################################################
-
-
-@app.cli.command('init_db')
-def init_db():
-    db.drop_all()
-    db.create_all()
-
-    # insert roles
-    roles = {
-        1: "Admin", 2: "Pharmacist", 3: "Diagnostic"
-    }
-    for x, y in roles.items():
-        role = Role(id=x, role=y)
-        db.session.add(role)
-    db.session.commit()
-
-    # insert users
-    user1 = User(userName="RE16153100", password="RE16153100", roleId=1)
-    user2 = User(userName="PS16153100", password="12345", roleId=2)
-    user3 = User(userName="DS16153100", password="12345", roleId=3)
-    db.session.add(user1)
-    db.session.add(user2)
-    db.session.add(user3)
-    db.session.commit()
-
-    # insert tests
-    tests = [(1, 'BP', 250), (2, 'ECG', 500), (3, 'X-Ray', 150)]
-    for x in tests:
-        test = Test(id=x[0], name=x[1], cost=x[2])
-        db.session.add(test)
-
-    medicines = [(1, 'M1', 250, 2), (2, 'M2', 100, 10), (3, 'M3', 150, 30)]
-    for x in medicines:
-        medicine = Medicine(id=x[0], name=x[1], available=x[2], cost=x[3])
-        db.session.add(medicine)
-    db.session.commit()
 
 
 if __name__ == "__main__":
