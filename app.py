@@ -16,7 +16,7 @@ if ENV == 'dev':
     app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:mathew@localhost/HMS"
 else:
     app.debug = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://ritywjjwncnjwl:4f895778799f51ab8a385c76fc9bbba99a5c576da461c721d6af870f5cef0293@ec2-54-90-68-208.compute-1.amazonaws.com:5432/d30am2lg1t8etv"
+    app.config['SQLALCHEMY_DATABASE_URI'] = "postgres://oxzszdpujstton:7909b2b060bc3e9002d97ff5137b73f92043edf8b092a119b94588def46667d3@ec2-3-210-178-167.compute-1.amazonaws.com:5432/d2nq8a3ibvm6ps"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -27,7 +27,7 @@ class User(db.Model):
     userName = db.Column(db.String(20), primary_key=True,
                          unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
-    timeStamp = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+
     # roleId here is foreign key which references to role table
     roleId = db.Column(db.Integer, db.ForeignKey('role.id'), nullable=False)
     role = db.relationship('Role')
